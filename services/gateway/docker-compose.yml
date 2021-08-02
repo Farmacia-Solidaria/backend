@@ -1,0 +1,23 @@
+# USE THIS DOCKER COMPOSE ONLY FOR DEVELOPMENT ON THIS SINGLE SERVICE
+
+version: '3.9'
+services: 
+    backend:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        command: 'python manage.py runserver 0.0.0.0:8000'
+        ports: 
+            - 8000:8000
+    
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_DB=farmacia-solidaria
+            - POSTGRES_PASSWORD=root
+            - POSTGRES_USER=root
+        volumes:
+            - ../../data/postgres-data:/var/lib/postgresql/data
+        ports:
+            - 7001:5432

@@ -1,0 +1,59 @@
+version: '3.9'
+services: 
+    users:
+        image: farmacia-solidaria/users:latest
+        command: 'python server.py'
+        environment: 
+            - SERVICE_PORT=8001
+
+    login:
+        image: farmacia-solidaria/login:latest
+        command: 'python server.py'
+        environment: 
+            - SERVICE_PORT=8002
+    
+    products:
+        image: farmacia-solidaria/products:latest
+        command: 'python server.py'
+        environment: 
+            - SERVICE_PORT=8003
+    
+    gateway: 
+        image: farmacia-solidaria/gateway:latest
+        command: 'python manage.py runserver 0.0.0.0:8000'
+        ports: 
+            - 8000:8000
+
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_DB=farmacia-solidaria
+            - POSTGRES_PASSWORD=root
+            - POSTGRES_USER=root
+        volumes:
+            - ./data/postgres-data:/var/lib/postgresql/data
+        
+    # redis:
+    #     image: redis
+    #     restart: always
+
+    # queue:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile
+    #     command: 'python consumer.py'
+    #     depends_on: 
+    #         - db
+    # db:
+    #     image: mysql:5.7.22
+    #     restart: always
+    #     environment: 
+    #         MYSQL_DATABASE: admin
+    #         MYSQL_USER: root
+    #         MYSQL_PASSWORD: root
+    #         MYSQL_ROOT_PASSWORD: root
+    #     volumes:
+    #         - .dbdata:/var/lib/mysql
+    #     ports:
+    #         - 33066:3306
