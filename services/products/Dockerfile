@@ -6,3 +6,5 @@ RUN pip install -r requirements.txt
 COPY . /app
 
 ENV FLASK_APP=server.py
+
+CMD python server.py

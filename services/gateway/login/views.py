@@ -6,5 +6,6 @@ import requests
 
 class LoginViewset(APIView):
 
-    def get(self, request):
-        return Response(requests.get("http://login:8002"))
+    async def get(self, request):
+        print("Recieved request")
+        return Response(requests.get("http://login:8001"))

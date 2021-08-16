@@ -1,28 +1,31 @@
 version: '3.9'
 services: 
+    gateway: 
+        image: farmacia-solidaria/gateway:latest
+        restart: unless-stopped
+        environment:
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8000
+        ports: 
+            - 8000:8000
+        depends_on: 
+            - kafka
+            - zookeeper
+
     users:
         image: farmacia-solidaria/users:latest
-        command: 'python server.py'
         environment: 
             - SERVICE_PORT=8001
 
     login:
         image: farmacia-solidaria/login:latest
-        command: 'python server.py'
         environment: 
-            - SERVICE_PORT=8002
+            - SERVICE_PORT=8001
     
     products:
         image: farmacia-solidaria/products:latest
-        command: 'python server.py'
         environment: 
-            - SERVICE_PORT=8003
-    
-    gateway: 
-        image: farmacia-solidaria/gateway:latest
-        command: 'python manage.py runserver 0.0.0.0:8000'
-        ports: 
-            - 8000:8000
+            - SERVICE_PORT=8001
 
     postgres:
         image: postgres
@@ -33,6 +36,35 @@ services:
             - POSTGRES_USER=root
         volumes:
             - ./data/postgres-data:/var/lib/postgresql/data
+
+    # kafka-handler:
+    #     image: farmacia-solidaria/kafka-handler:latest
+    #     command: python server.py
+    #     restart: unless-stopped
+    #     depends_on: 
+    #         - kafka
+    
+    zookeeper:
+        image: 'bitnami/zookeeper:latest'
+        user: root
+        restart: unless-stopped
+        environment: 
+            - ZOO_PORT_NUMBER=2181
+            - ALLOW_ANONYMOUS_LOGIN=yes # TODO: Configure properly zookeeper
+        volumes: 
+            - ./data/zookeeper-data:/bitnami/zookeeper
+
+    kafka:
+        image: bitnami/kafka:latest
+        user: root
+        restart: unless-stopped
+        environment:
+            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+            - ALLOW_PLAINTEXT_LISTENER=yes # TODO: Configure properly kafka listeners
+        volumes:
+            - ./data/kafka-data:/bitnami/kafka
+        depends_on: 
+            -  zookeeper
         
     # redis:
     #     image: redis
