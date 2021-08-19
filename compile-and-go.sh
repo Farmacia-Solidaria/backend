@@ -1,4 +1,4 @@
 #!/bin/bash
 
 sh ./build-containers.sh dev
-docker-compose up --build
+docker-compose up --build --remove-orphans

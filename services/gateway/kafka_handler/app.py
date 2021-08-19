@@ -15,7 +15,7 @@ kafkaProducer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BROKER_URL])
 
 @faust.on_configured.connect
 def configure_from_settings(app, conf, **kwargs):
-    conf.broker = settings.KAFKA_BROKER_URL
+    conf.broker = "kafka://"+settings.KAFKA_BROKER_URL
     conf.store = settings.FAUST_STORE_URL
 
 def publish_message(topic_name, key, value):

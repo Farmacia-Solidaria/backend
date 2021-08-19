@@ -6,4 +6,4 @@ RUN apt-get install -y python-dev librocksdb-dev build-essential libsnappy-dev z
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /app
-CMD python manage.py runserver & python kafka_handler/app.py worker
+CMD [ "bash", "/app/entrypoint.sh" ]
