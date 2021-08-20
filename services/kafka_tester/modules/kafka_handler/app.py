@@ -6,12 +6,11 @@ from django.conf import settings
 
 # Append parent directory to syspath so is possible to import other apps here
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-os.environ.setdefault('FAUST_LOOP', 'eventlet')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kafka_tester.settings')
 
-
-faustApp = faust.App('kafka_tester-kafka_handler', autodiscover=True, origin='modules')
+faustApp = faust.App('kafka_tester-kafka_handler', autodiscover=True, origin="modules.kafka_handler")
 kafkaProducer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BROKER_URL]) 
 
 
@@ -19,12 +18,6 @@ kafkaProducer = KafkaProducer(bootstrap_servers=[settings.KAFKA_BROKER_URL])
 def configure_from_settings(app, conf, **kwargs):
     conf.broker = "kafka://"+settings.KAFKA_BROKER_URL
     conf.store = settings.FAUST_STORE_URL
-
-@faustApp.agent("kafka_tester-income")
-async def test(events):
-    async for event in events:
-        print(event)
-
 
 def main():
     faustApp.main()

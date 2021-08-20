@@ -1,4 +1,3 @@
-aioeventlet @ file:///home/otaviocap/Downloads/aioeventlet-0.5.1.tar.gz
 aiohttp==3.7.4.post0
 aiohttp-cors==0.7.0
 arrow==1.1.1
@@ -6,6 +5,7 @@ asgiref==3.4.1
 async-timeout==3.0.1
 attrs==21.2.0
 binaryornot==0.4.4
+build==0.6.0.post1
 certifi==2021.5.30
 chardet==4.0.0
 charset-normalizer==2.0.4
@@ -32,8 +32,11 @@ mode==4.3.2
 multidict==5.1.0
 mypy-extensions==0.4.3
 opentracing==1.3.0
+packaging==21.0
+pep517==0.11.0
 poyo==0.5.0
 psycopg2==2.9.1
+pyparsing==2.4.7
 python-dateutil==2.8.2
 python-rocksdb==0.7.0
 python-slugify==5.0.2
@@ -44,6 +47,7 @@ six==1.16.0
 sqlparse==0.4.1
 terminaltables==3.1.0
 text-unidecode==1.3
+tomli==1.2.1
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 venusian==1.2.0

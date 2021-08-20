@@ -1,4 +1,4 @@
-from modules.kafka_handler.app import kafkaProducer
+from kafka_handler.app import kafkaProducer
 
 def publish_message(topic_name, key, value):
     try:

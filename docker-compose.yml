@@ -32,6 +32,8 @@ services:
     kafka_tester:
         image: farmacia-solidaria/kafka_tester:latest
         restart: unless-stopped
+        ports: 
+            - 8001:8001
         environment: 
             - SERVICE_ADDR=0.0.0.0
             - SERVICE_PORT=8001
@@ -82,6 +84,8 @@ services:
             - ALLOW_ANONYMOUS_LOGIN=yes # TODO: Configure properly zookeeper
         volumes: 
             - ./data/zookeeper-data:/bitnami/zookeeper
+        logging:
+            driver: "none"
 
     kafka:
         image: bitnami/kafka:latest
@@ -96,6 +100,8 @@ services:
             -  zookeeper
         ports:
             - 9092:9092
+        logging:
+            driver: "none"
         
     # redis:
     #     image: redis

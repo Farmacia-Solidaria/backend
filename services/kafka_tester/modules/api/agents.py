@@ -1,17 +1,17 @@
 import faust
 
 from faust.types import StreamT
-from kafka_handler.app import faustApp
+from modules.kafka_handler.app import faustApp
 
 class Message(faust.Record, serializer='json'):
     action: str
     state: str
     data: dict
 
-defaultInTopic = faust.Topic("kafka_tester-income", value_type=Message)
-defaultOutTopic = faust.Topic("kafka_tester-outcome", value_type=Message)
+defaultInTopic = faustApp.topic("kafka_tester-income", value_type=Message)
+defaultOutTopic = faustApp.topic("kafka_tester-outcome", value_type=Message)
 
-@faustApp.Agent(defaultInTopic, sink=[defaultOutTopic])
+@faustApp.agent(sink=[defaultOutTopic])
 async def defaultAgent(messages: StreamT[Message]):
     print("Something:")
     async for event in messages:
@@ -24,7 +24,7 @@ async def defaultAgent(messages: StreamT[Message]):
         yield result.pk
 
 
-@faustApp.agent(sink=[defaultAgent])
+@faustApp.agent(defaultInTopic, sink=[defaultAgent])
 async def preProcess(messages):
     # Verify integrity here
      async for event in messages:
