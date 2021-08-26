@@ -8,6 +8,8 @@ from prompt_toolkit.output import Output
 parser = argparse.ArgumentParser(description="A tool to help building containers")
 parser.add_argument("--env", dest="env", help="Set the enviroment")
 parser.add_argument("--containers", dest="containers", help="Select containers to build (all, same, none)")
+parser.add_argument("--update", dest="update", const=True, default=False, action="store_const", help="Update container if running")
+parser.add_argument("--update-commons", dest="common", const=True, default=False, action="store_const", help="Update commons")
 
 def main(args):
     containers = listdir("services")
@@ -51,19 +53,29 @@ def main(args):
     
         for container in toCompile:
             command = f"""
-
-            echo "Building {container}:{args.env}:" &&
-            
             cd services/{container} &&
             docker build -t farmacia-solidaria/{container}:{args.env} . &&
-            docker tag farmacia-solidaria/{container}:{args.env} farmacia-solidaria/{container}:latest &&
+            docker tag farmacia-solidaria/{container}:{args.env} farmacia-solidaria/{container}:latest
             """
 
-            out = subprocess.call(command.split(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(out)
+            if args.common:
+                command = f"""
+                rm -r services/{container}/common/ &&
+                cp -r common/ services/{container} &&
+                """ + command
 
+            print(f"\n\nBuilding {container}:{args.env}:")
+            subprocess.run(command, shell=True, check=True)
 
+            if args.update:
+                command = f"""            
+                docker-compose stop {container} &&
+                docker-compose kill {container} &&
+                docker-compose up -d --no-deps {container}
+                """
 
+                print(f"\nKilling and updating container {container}:{args.env}:")
+                subprocess.run(command, shell=True, check=True)
 
 if __name__ == "__main__":
     try:

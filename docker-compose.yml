@@ -12,7 +12,6 @@ services:
             - KAFKA_BROKERCONNECT=kafka:9092
         depends_on: 
             - kafka
-            - gateway    
 
     # === END TOOLS ===
 
@@ -26,14 +25,13 @@ services:
             - 8000:8000
         depends_on: 
             - kafka
-            - zookeeper
             - postgres
 
-    kafka_tester:
-        image: farmacia-solidaria/kafka_tester:latest
+    login:
+        image: farmacia-solidaria/login:latest
         restart: unless-stopped
         ports: 
-            - 8001:8001
+            - 8002:8001
         environment: 
             - SERVICE_ADDR=0.0.0.0
             - SERVICE_PORT=8001
@@ -44,19 +42,8 @@ services:
             - DATABASE_HOST=postgres
             - DATABASE_PORT=5432
         depends_on: 
+            - kafka
             - postgres
-
-    users:
-        image: farmacia-solidaria/users:latest
-        restart: unless-stopped
-        environment: 
-            - SERVICE_PORT=8001
-    
-    products:
-        image: farmacia-solidaria/products:latest
-        restart: unless-stopped
-        environment: 
-            - SERVICE_PORT=8001
 
     postgres:
         image: postgres
@@ -67,13 +54,6 @@ services:
             - POSTGRES_USER=root
         volumes:
             - ./data/postgres-data:/var/lib/postgresql/data
-
-    # kafka-handler:
-    #     image: farmacia-solidaria/kafka-handler:latest
-    #     command: python server.py
-    #     restart: unless-stopped
-    #     depends_on: 
-    #         - kafka
     
     zookeeper:
         image: 'bitnami/zookeeper:latest'
@@ -96,6 +76,7 @@ services:
             - ALLOW_PLAINTEXT_LISTENER=yes # TODO: Configure properly kafka listeners
         volumes:
             - ./data/kafka-data:/bitnami/kafka
+            - ./configuration/kafka-config:/opt/bitnami/kafka/config
         depends_on: 
             -  zookeeper
         ports:
