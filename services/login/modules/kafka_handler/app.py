@@ -7,9 +7,17 @@ from django.conf import settings
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'login.settings')
+os.environ.setdefault(
+    'DJANGO_SETTINGS_MODULE', 
+    'login.settings'
+)
 
-faustApp = faust.App('login-kafka_handler', autodiscover=True, origin='modules')
+
+faustApp = faust.App(
+    'login-kafka_handler', 
+    autodiscover=True, 
+    origin='modules'
+)
 
 @faustApp.on_configured.connect
 def configure_from_settings(app, conf, **kwargs):

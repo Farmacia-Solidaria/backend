@@ -60,7 +60,7 @@ def main(args):
 
             if args.common:
                 command = f"""
-                rm -r services/{container}/common/ &&
+                rm -r -f services/{container}/common/ &&
                 cp -r common/ services/{container} &&
                 """ + command
 

@@ -35,12 +35,16 @@ opentracing==1.3.0
 packaging==21.0
 pep517==0.11.0
 poyo==0.5.0
+prompt-toolkit==1.0.14
 psycopg2==2.9.1
+Pygments==2.10.0
+PyInquirer==1.0.3
 pyparsing==2.4.7
 python-dateutil==2.8.2
 python-rocksdb==0.7.0
 python-slugify==5.0.2
 pytz==2021.1
+regex==2021.8.3
 requests==2.26.0
 robinhood-aiokafka==1.1.6
 six==1.16.0
@@ -51,5 +55,6 @@ tomli==1.2.1
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 venusian==1.2.0
+wcwidth==0.2.5
 Werkzeug==2.0.1
 yarl==1.6.3
