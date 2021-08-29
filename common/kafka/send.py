@@ -27,7 +27,6 @@ def send_message(service, action, data, key=""):
 
     message = Message(
         action=action,
-        state="Waiting",
         data=data,
         id=finalKey
     )

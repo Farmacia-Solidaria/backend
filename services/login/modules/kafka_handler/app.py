@@ -12,10 +12,11 @@ os.environ.setdefault(
     'login.settings'
 )
 
-
 faustApp = faust.App(
     'login-kafka_handler', 
-    autodiscover=True, 
+    autodiscover=[
+        "modules.api.agents"
+    ],
     origin='modules'
 )
 

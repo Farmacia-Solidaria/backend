@@ -8,6 +8,7 @@ from prompt_toolkit.output import Output
 parser = argparse.ArgumentParser(description="A tool to help building containers")
 parser.add_argument("--env", dest="env", help="Set the enviroment")
 parser.add_argument("--containers", dest="containers", help="Select containers to build (all, same, none)")
+parser.add_argument("--only", dest="only", help="Select which containers to build (gateway, login, ...). For more than one, use ,. Ex.: gateway,login,products")
 parser.add_argument("--update", dest="update", const=True, default=False, action="store_const", help="Update container if running")
 parser.add_argument("--update-commons", dest="common", const=True, default=False, action="store_const", help="Update commons")
 
@@ -29,8 +30,11 @@ def main(args):
                     "staging"
                 ],
             })
+
+        if args.only:
+            toCompile = args.only.split(",")
         
-        if args.containers not in ['same', 'all', 'none']:
+        if args.containers not in ['same', 'all', 'none'] and not args.only:
             options.append({
                 'type': 'checkbox',
                 'name': 'toCompile',

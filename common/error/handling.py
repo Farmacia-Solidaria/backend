@@ -1,15 +1,16 @@
-# from rest_framework.views import exception_handler
-# from rest_framework.settings import api_settings
-# from rest_framework import exceptions
+from common.models.message import Message
 
+def handleError(event: Message, message="", where=""):
+    event.error = True
+    event.data = {
+        "message":message,
+        "where":where
+    }
 
-# def custom_exception_handler(exc, context):
-#     response = exception_handler(exc, context)
+def checkError(event: Message, where):
 
-#     # If unexpected error occurs (server error, etc.)
-#     if response is None:
-#         return response
-
-#     response.data = "BIG ERROR"
-
-#     return response
+    if event.error:
+        event.data['where'] = event.data['where'] + f"/{where}" if 'where' in event.data else where
+        return True    
+        
+    return False

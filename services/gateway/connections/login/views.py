@@ -6,11 +6,11 @@ from common.kafka.send import send_and_wait_message
 
 class LoginViewset(APIView):
 
-    def post(self, request):
+    def post(self, request, action):
        
         data = send_and_wait_message(
             service="login", 
-            action="check_for_login", 
+            action=action, 
             data={ 
                 "username": request.data['username'], 
                 "password": request.data["password"]
