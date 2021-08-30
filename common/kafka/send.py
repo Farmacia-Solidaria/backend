@@ -1,5 +1,6 @@
 import uuid
 import json
+import os
 
 from common.base import kafkaProducer
 from common.models.message import Message
@@ -8,7 +9,7 @@ from common.kafka.builders import build_kafka_consumer
 
 #region PUBLIC METHODS
 
-def send_and_wait_message(service, action, data) -> dict:
+def send_and_wait_message(service, action, data, filter=False) -> dict:
     key = str(uuid.uuid1())
 
     consumer = build_kafka_consumer(service+"-outcome")
@@ -20,6 +21,14 @@ def send_and_wait_message(service, action, data) -> dict:
         if "id" in value:
             if value['id'] == key:
                 consumer.close()
+
+                if filter:
+                    value = {
+                        "action": value["action"],
+                        "error": value["error"],
+                        "data": value["data"],
+                    }
+
                 return value
 
 def send_message(service, action, data, key=""):
@@ -30,8 +39,13 @@ def send_message(service, action, data, key=""):
         data=data,
         id=finalKey
     )
-
-    return _send_to_topic(service+"-income", finalKey, message.dumps())
+    try:
+        _send_to_topic(service+"-income", finalKey, message.dumps())
+        return finalKey
+    
+    except Exception as ex:
+        print(ex)
+        return False
 
 #endregion
 
@@ -44,5 +58,5 @@ def _send_to_topic(topic_name, key, value):
         kafkaProducer.flush()
         return True
     except Exception as ex:
-        return False
+        raise ex
 #endregion
