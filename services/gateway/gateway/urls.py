@@ -18,4 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('api/', include('connections.login.urls')),
+    path('api/', include('connections.products.urls')),
 ]
