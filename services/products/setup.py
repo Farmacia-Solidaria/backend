@@ -12,6 +12,7 @@ requirements = [
     #Kafka
     "faust[rocksdb]==1.10.4",
     "kafka-python==1.4.7",
+    "robinhood-aiokafka==1.1.6",
 
     #Build
     "build==0.6.0.post1",

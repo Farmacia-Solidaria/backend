@@ -1,35 +1,47 @@
+from common.error.error import ActionError
 import uuid
 import json
 import os
 
 from common.base import kafkaProducer
 from common.models.message import Message
-from common.kafka.builders import build_kafka_consumer
+from common.kafka.builders import build_kafka_consumer, build_async_kafka_consumer
 
 
 #region PUBLIC METHODS
 
-def send_and_wait_message(service, action, data, filter=False) -> dict:
+async def async_send_and_wait_message(service, action, data, filter=False, suppress_errors=False) -> dict:
     key = str(uuid.uuid1())
 
-    consumer = build_kafka_consumer(service+"-outcome")
+    consumer = build_async_kafka_consumer(service+"-outcome", timeout_in_seconds=2)
+    await consumer.start()
+    
+    send_message(service, action, data, key)
 
+    async for event in consumer:
+        value = json.loads(event.value.decode("utf-8"))
+        if _treat_event(value, key, suppress_errors):
+            await consumer.stop()
+            
+            if filter:
+                value = _filter_value(value)
+
+            return value
+
+def send_and_wait_message(service, action, data, filter=False, suppress_errors=False) -> dict:
+    key = str(uuid.uuid1())
+
+    consumer = build_kafka_consumer(service+"-outcome", timeout_in_seconds=2)
+    
     send_message(service, action, data, key)
 
     for event in consumer:
         value = json.loads(event.value.decode("utf-8"))
-        if "id" in value:
-            if value['id'] == key:
-                consumer.close()
-
-                if filter:
-                    value = {
-                        "action": value["action"],
-                        "error": value["error"],
-                        "data": value["data"],
-                    }
-
-                return value
+        if _treat_event(value, key, suppress_errors):
+            consumer.close()
+            if filter:
+                value = _filter_value(value)
+            return value
 
 def send_message(service, action, data, key=""):
     finalKey = key if key != "" else str(uuid.uuid1())
@@ -49,7 +61,7 @@ def send_message(service, action, data, key=""):
 
 #endregion
 
-#region HELPER METHODS
+#region PRIVATE METHODS
 def _send_to_topic(topic_name, key, value):
     print(topic_name, key, value)
     try:
@@ -59,4 +71,22 @@ def _send_to_topic(topic_name, key, value):
         return True
     except Exception as ex:
         raise ex
+
+def _treat_event(value, key, suppress_errors):
+    print("From recieving event: ", value)
+    if "id" in value:
+        if value['id'] == key:
+            if value["error"] and not suppress_errors:
+                raise ActionError(value["data"])
+
+            return True
+    return False
+
+def _filter_value(value):
+    return {
+        "action": value["action"],
+        "error": value["error"],
+        "data": value["data"],
+    }
+
 #endregion

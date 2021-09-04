@@ -1,5 +1,6 @@
 aiohttp==3.7.4.post0
 aiohttp-cors==0.7.0
+aiokafka==0.7.2
 arrow==1.1.1
 asgiref==3.4.1
 async-timeout==3.0.1
@@ -26,7 +27,7 @@ idna==3.2
 itsdangerous==2.0.1
 Jinja2==3.0.1
 jinja2-time==0.2.0
-kafka-python==1.4.7
+kafka-python==2.0.2
 MarkupSafe==2.0.1
 mode==4.3.2
 multidict==5.1.0

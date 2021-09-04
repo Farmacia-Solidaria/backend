@@ -6,7 +6,7 @@ class ActionHandler():
 
     actions: dict = {}
     default_function: Callable = None
-    error_handling: Callable = lambda: False
+    on_error: Callable = lambda: False
 
     def register(self, func):
 
@@ -22,18 +22,23 @@ class ActionHandler():
 
         return func
 
-    def error_checking(self, func):
-        self.error_handling = func
+    def register_error_handler(self, func):
+        self.on_error = func
         
         return func
 
     def run_action(self, action, *args, **kwargs):
+        try:
+            return self.get_action(action)(*args, **kwargs)
+        except Exception as ex:
+            return self.on_error(action, ex, *args, **kwargs)
+        
+    
+    def get_action(self, action):
         if action in self.actions:
-            if not self.error_handling(*args, **kwargs):
-                return self.actions[action](*args, **kwargs)
+            return self.actions[action]
 
         if self.default_function != None:
-            return self.default_function(*args, **kwargs)
+            return self.default_function
         
-        else:
-            raise NotImplementedError("Default not implemented")
+        

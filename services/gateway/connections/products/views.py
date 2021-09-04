@@ -7,12 +7,13 @@ from common.kafka.send import send_and_wait_message
 class ProductViewset(APIView):
 
     def post(self, request, action):
-       
-        data = send_and_wait_message(
-            service="products", 
-            action=action, 
-            data=request.data,
-            filter=True
-        )
-        
-        return Response(data, status=status.HTTP_200_OK)
+
+            data = send_and_wait_message(
+                service="products", 
+                action=action, 
+                data=request.data,
+                filter=True,
+                suppress_errors=True
+            )
+            
+            return Response(data, status=status.HTTP_200_OK)

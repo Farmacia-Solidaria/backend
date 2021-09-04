@@ -1,48 +1,70 @@
+from common.error.error import ActionError
 from common.error.handling import handleError, checkError
 from common.models.message import Message
 from common.kafka.actions import ActionHandler
-from common.kafka.send import send_and_wait_message
+from common.kafka.send import async_send_and_wait_message, send_message
+
+import asyncio
 
 
 actioneer = ActionHandler()
 
 @actioneer.register
-def auth(message: Message):
+async def auth(message: Message):
     message.data["JWToken"] = "fake-token-jwt"
 
 @actioneer.register
-def testForError(message: Message):
-
-    print("1")
-    send_and_wait_message(
-        service="products", 
-        action="123", 
+async def self(message: Message):
+    data = await async_send_and_wait_message(
+        service="login", 
+        action="auth", 
         data=message.data,
     )
+    message.data = data['data']
 
-    print("2")
-    send_and_wait_message(
-        service="products", 
-        action="345", 
-        data=message.data,
-    )
+@actioneer.register
+async def whyAsync(message: Message):
+    await asyncio.sleep(5)
 
-    print("3")
-    actioneer.run_action("123", message)
+@actioneer.register
+async def testForError(message: Message):
 
-    print("4")
-    actioneer.run_action("auth", message)
+    try:
+        print("1")
+        await async_send_and_wait_message(
+            service="products", 
+            action="comeback", 
+            data=message.data,
+        )
 
-    message.data["ok"] = "ended cycle"
+        print("2")
+        message = await async_send_and_wait_message(
+            service="products", 
+            action="345", 
+            data=message.data,
+        )
 
-@actioneer.error_checking
-def error(event: Message):
-    return checkError(event, 'login')
+        print("3")
+        send_message(
+            service="login", 
+            action="345", 
+            data=message.data,
+        )
+
+        await asyncio.sleep(1)
+
+        message.data["ok"] = "ended cycle"
         
-
+    except ActionError as ex:
+        handleError(
+            message,
+            information=ex.args[0],
+            where="login"
+        )
+           
 @actioneer.default
-def default(message: Message):
+async def default(message: Message):
     handleError(
         message,
-        message="Action not implemented",
-        where="Login")
+        information="Action not implemented",
+        where="login")

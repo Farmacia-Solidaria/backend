@@ -15,7 +15,8 @@ class LoginViewset(APIView):
                 "username": request.data['username'], 
                 "password": request.data["password"]
             },
-            filter=True
+            filter=True,
+            suppress_errors=True
         )
         
         return Response(data, status=status.HTTP_200_OK)
