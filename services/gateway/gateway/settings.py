@@ -46,9 +46,7 @@ THIRD_PARTY_APPS = [
 
 CONNECTIONS = [
     'connections.login',
-    'connections.products',
     'connections.users',
-    'connections.report',
 ]
 
 LOCAL_APPS = [

@@ -1,6 +1,8 @@
 # Backend
 
+## Installation
 
-## Alterations
-
-Setted max retention time in kafka to 1 minute
+To install please compile everything using:
+```
+python3 safeBuild.py --containers all --update-commons --env dev
+```
