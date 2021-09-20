@@ -14,7 +14,7 @@ conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
 
 try:
-    cur.execute('CREATE DATABASE "fs-products" ')
+    cur.execute('CREATE DATABASE "fs-users" ')
 except:
     print("Database already created, starting server")
 

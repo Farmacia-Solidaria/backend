@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from common.kafka.send import send_and_wait_message
 
-class ProductViewset(APIView):
+class UserViewset(APIView):
 
     def post(self, request, action):
 
             data = send_and_wait_message(
-                service="products", 
+                service="users", 
                 action=action, 
                 data=request.data,
                 filter=True,

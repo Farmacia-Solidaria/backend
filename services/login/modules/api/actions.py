@@ -27,6 +27,10 @@ async def whyAsync(message: Message):
     await asyncio.sleep(5)
 
 @actioneer.register
+async def teste123(message: Message):
+    message.data["teste"] = "VALOR DE TESTE"
+
+@actioneer.register
 async def testForError(message: Message):
 
     try:

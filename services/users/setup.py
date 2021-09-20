@@ -12,16 +12,15 @@ requirements = [
     #Kafka
     "faust[rocksdb]==1.10.4",
     "kafka-python==1.4.7",
-    "robinhood-aiokafka==1.1.6",
 
     #Build
     "build==0.6.0.post1",
 ]
 
 setup(
-    name="products",
+    name="users",
     version="0.0.1",
-    description="Sample Description",
+    description="User service. A user is a who has access to the system",
     author="Farmácia Solidária Devs",
     author_email="dev@dev.com",
     url="https://github.com/Farmacia-Solidaria",
@@ -34,7 +33,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'service-django = products.__main__:main',
+            'service-django = users.__main__:main',
             'service-faust = modules.kafka_handler.app:main',
         ],
     },

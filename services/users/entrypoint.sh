@@ -3,4 +3,4 @@
 python createAndConfigure.py
 
 (service-django runserver) &
-(service-faust worker -l info) 
+(service-faust worker -l info)

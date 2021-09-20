@@ -133,3 +133,5 @@ data/*
 lastoptions
 
 services/*/common/
+
+.vscode

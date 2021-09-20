@@ -58,6 +58,23 @@ services:
         depends_on: 
             - kafka
             - postgres
+    
+    report:
+        image: farmacia-solidaria/report:latest
+        restart: unless-stopped
+        environment: 
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8001
+            - DEBUG=TRUE
+            - SECRET_KEY=secret_key
+            - DATABASE_USERNAME=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+        depends_on: 
+            - kafka
+            - postgres
+
     users:
         image: farmacia-solidaria/users:latest
         restart: unless-stopped
@@ -115,9 +132,13 @@ services:
         logging:
             driver: "none"
         
-    # redis:
-    #     image: redis
-    #     restart: always
+    redis:
+        image: redis
+        restart: unless-stopped
+        ports:
+            - 9001:6379
+        volumes:
+            - ./data/redis-data:/data
 
     # queue:
     #     build:

@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'products.urls'
+ROOT_URLCONF = 'users.urls'
 
 TEMPLATES = [
      {
@@ -70,14 +70,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'products.wsgi.application'
+WSGI_APPLICATION = 'users.wsgi.application'
 
 
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fs-products',
+        'NAME': 'fs-users',
         'USER': os.getenv("DATABASE_USERNAME"),
         'PASSWORD': os.getenv("DATABASE_PASSWORD"),
         'HOST': os.getenv("DATABASE_HOST"),

@@ -9,11 +9,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 os.environ.setdefault(
     'DJANGO_SETTINGS_MODULE', 
-    'products.settings'
+    'users.settings'
 )
 
 faustApp = faust.App(
-    'products-kafka_handler', 
+    'users-kafka_handler', 
     autodiscover=[
         "modules.api.agents"
     ], 
