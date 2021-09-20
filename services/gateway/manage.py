@@ -9,6 +9,18 @@ def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gateway.settings')
     try:
         from django.core.management import execute_from_command_line
+
+        import django
+        django.setup()
+
+        # Override default port for `runserver` command
+        from django.core.management.commands.runserver import Command as runserver
+        runserver.default_port = os.getenv("SERVICE_PORT")
+        runserver.default_addr = os.getenv("SERVICE_ADDR")
+
+        from django.core.management import execute_from_command_line
+
+
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "

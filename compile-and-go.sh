@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sh ./build-containers.sh dev
-docker-compose up --build
+python3 safeBuild.py --env dev --containers all --update-commons
+docker-compose up --build --remove-orphans

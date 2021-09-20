@@ -25,10 +25,35 @@ SECRET_KEY = 'django-insecure-ghc+fuhbef=(q1__lbam8hivs-1it2(oo(!h$+=s*#al&p(%d*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0"
+]
+
+
+# Kafka and Faust Configuration
+KAFKA_BROKER_URL = 'kafka:9092'
+FAUST_STORE_URL = 'rocksdb://'
+
 
 
 # Application definition
+
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'corsheaders',
+]
+
+CONNECTIONS = [
+    'connections.login',
+    'connections.products',
+    'connections.users',
+    'connections.report',
+]
+
+LOCAL_APPS = [
+    'kafka_handler',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,9 +62,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'corsheaders',
-    'login',
+    *THIRD_PARTY_APPS,
+    *CONNECTIONS, 
+    *LOCAL_APPS,
 ]
 
 MIDDLEWARE = [
@@ -111,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 

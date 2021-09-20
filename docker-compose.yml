@@ -1,42 +1,144 @@
 version: '3.9'
 services: 
-    users:
-        image: farmacia-solidaria/users:latest
-        command: 'python server.py'
-        environment: 
-            - SERVICE_PORT=8001
+
+    # ===   TOOLS   ===
+
+    kafka-monitoring:
+        image: obsidiandynamics/kafdrop
+        restart: unless-stopped
+        ports: 
+            - 8080:9000
+        environment:
+            - KAFKA_BROKERCONNECT=kafka:9092
+        depends_on: 
+            - kafka
+
+    # === END TOOLS ===
+
+    gateway: 
+        image: farmacia-solidaria/gateway:latest
+        restart: unless-stopped
+        environment:
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8000
+        ports: 
+            - 8000:8000
+        depends_on: 
+            - kafka
+            - postgres
 
     login:
         image: farmacia-solidaria/login:latest
-        command: 'python server.py'
+        restart: unless-stopped
         environment: 
-            - SERVICE_PORT=8002
-    
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8001
+            - DEBUG=TRUE
+            - SECRET_KEY=secret_key
+            - DATABASE_USERNAME=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+        depends_on: 
+            - kafka
+            - postgres
+
     products:
         image: farmacia-solidaria/products:latest
-        command: 'python server.py'
+        restart: unless-stopped
         environment: 
-            - SERVICE_PORT=8003
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8001
+            - DEBUG=TRUE
+            - SECRET_KEY=secret_key
+            - DATABASE_USERNAME=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+        depends_on: 
+            - kafka
+            - postgres
     
-    gateway: 
-        image: farmacia-solidaria/gateway:latest
-        command: 'python manage.py runserver 0.0.0.0:8000'
-        ports: 
-            - 8000:8000
+    report:
+        image: farmacia-solidaria/report:latest
+        restart: unless-stopped
+        environment: 
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8001
+            - DEBUG=TRUE
+            - SECRET_KEY=secret_key
+            - DATABASE_USERNAME=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+        depends_on: 
+            - kafka
+            - postgres
+
+    users:
+        image: farmacia-solidaria/users:latest
+        restart: unless-stopped
+        environment: 
+            - SERVICE_ADDR=0.0.0.0
+            - SERVICE_PORT=8001
+            - DEBUG=TRUE
+            - SECRET_KEY=secret_key
+            - DATABASE_USERNAME=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+        depends_on: 
+            - kafka
+            - postgres
 
     postgres:
         image: postgres
         restart: always
+        ports: 
+            - 9000:5432
         environment:
-            - POSTGRES_DB=farmacia-solidaria
+            - POSTGRES_DB=root
             - POSTGRES_PASSWORD=root
             - POSTGRES_USER=root
         volumes:
             - ./data/postgres-data:/var/lib/postgresql/data
+    
+    zookeeper:
+        image: 'bitnami/zookeeper:latest'
+        user: root
+        restart: unless-stopped
+        environment: 
+            - ZOO_PORT_NUMBER=2181
+            - ALLOW_ANONYMOUS_LOGIN=yes # TODO: Configure properly zookeeper
+        volumes: 
+            - ./data/zookeeper-data:/bitnami/zookeeper
+        logging:
+            driver: "none"
+
+    kafka:
+        image: bitnami/kafka:latest
+        user: root
+        restart: unless-stopped
+        environment:
+            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+            - ALLOW_PLAINTEXT_LISTENER=yes # TODO: Configure properly kafka listeners
+        volumes:
+            - ./data/kafka-data:/bitnami/kafka
+            - ./configuration/kafka-config:/opt/bitnami/kafka/config
+        depends_on: 
+            -  zookeeper
+        ports:
+            - 9092:9092
+        logging:
+            driver: "none"
         
-    # redis:
-    #     image: redis
-    #     restart: always
+    redis:
+        image: redis
+        restart: unless-stopped
+        ports:
+            - 9001:6379
+        volumes:
+            - ./data/redis-data:/data
 
     # queue:
     #     build:
