@@ -45,7 +45,6 @@ THIRD_PARTY_APPS = [
 ]
 
 CONNECTIONS = [
-    'connections.login',
     'connections.users',
 ]
 

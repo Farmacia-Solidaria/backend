@@ -19,7 +19,8 @@ FAUST_STORE_URL = 'rocksdb://'
 
 LOCAL_APPS = [
     'modules.kafka_handler',
-    'modules.api'
+    'modules.api',
+    'modules.authorization',
 ]
 
 THIRD_PARTY_APPS = [
@@ -104,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 

@@ -16,4 +16,7 @@ class UserViewset(APIView):
                 suppress_errors=True
             )
             
-            return Response(data, status=status.HTTP_200_OK)
+            if data:
+                return Response(data, status=data["data"]["status"] if data["error"] else status.HTTP_200_OK)
+            
+            return Response(status=status.HTTP_408_REQUEST_TIMEOUT)
