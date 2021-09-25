@@ -1,7 +1,7 @@
 from common.error.error import ActionError
 import uuid
 import json
-import os
+import hashlib
 
 from common.base import kafkaProducer
 from common.models.message import Message
@@ -28,12 +28,20 @@ async def async_send_and_wait_message(service, action, data, filter=False, suppr
 
             return value
 
-def send_and_wait_message(service, action, data, filter=False, suppress_errors=False) -> dict:
+def send_and_wait_message(method, service, action, data, filter=False, suppress_errors=False) -> dict:
     key = str(uuid.uuid1())
 
-    consumer = build_kafka_consumer(service+"-outcome", timeout_in_seconds=2)
+    consumer = build_kafka_consumer(service+"-outcome", timeout_in_seconds=10)
+
+    data = _treat_sensible_information(data)
     
-    send_message(service, action, data, key)
+    send_message(
+        service=service, 
+        action=action, 
+        data=data, 
+        method=method, 
+        key=key
+    )
 
     for event in consumer:
         value = json.loads(event.value.decode("utf-8"))
@@ -43,13 +51,14 @@ def send_and_wait_message(service, action, data, filter=False, suppress_errors=F
                 value = _filter_value(value)
             return value
 
-def send_message(service, action, data, key=""):
+def send_message(service, action, data, method, key=""):
     finalKey = key if key != "" else str(uuid.uuid1())
 
     message = Message(
         action=action,
+        method=method,
         data=data,
-        id=finalKey
+        id=finalKey,
     )
     try:
         _send_to_topic(service+"-income", finalKey, message.dumps())
@@ -88,5 +97,14 @@ def _filter_value(value):
         "error": value["error"],
         "data": value["data"],
     }
+
+def _treat_sensible_information(data):
+    allow_list = ['password']
+
+    for i in data:
+        if i in allow_list:
+            data[i] = hashlib.sha512(str(i).encode()).hexdigest()
+
+    return data
 
 #endregion

@@ -13,7 +13,7 @@ async def defaultAgent(messages: StreamT[Message]):
         if checkError(event, 'users'):
             yield event
         
-        action = actioneer.get_action(event.action)
+        action = actioneer.get_action(event.method, event.action)
         await action(event)
         
         yield event

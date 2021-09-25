@@ -13,6 +13,10 @@ requirements = [
     "faust[rocksdb]==1.10.4",
     "kafka-python==1.4.7",
 
+    #Others
+    "PyJWT==2.1.0",
+    "cryptography==3.4.8",
+
     #Build
     "build==0.6.0.post1",
 ]

@@ -21,6 +21,14 @@ services:
         environment:
             - SERVICE_ADDR=0.0.0.0
             - SERVICE_PORT=8000
+            - DATABASE_HOST=postgres
+            - DATABASE_PORT=5432
+            - DEBUG
+            - DJANGO_SECRET_KEY
+            - DATABASE_USERNAME
+            - DATABASE_PASSWORD
+            - PRIVATE_KEY
+            - PUBLIC_KEY
         ports: 
             - 8000:8000
         depends_on: 
@@ -33,15 +41,19 @@ services:
         environment: 
             - SERVICE_ADDR=0.0.0.0
             - SERVICE_PORT=8001
-            - DEBUG=TRUE
-            - SECRET_KEY=secret_key
-            - DATABASE_USERNAME=root
-            - DATABASE_PASSWORD=root
             - DATABASE_HOST=postgres
             - DATABASE_PORT=5432
+            - DEBUG
+            - DJANGO_SECRET_KEY
+            - DATABASE_USERNAME
+            - DATABASE_PASSWORD
+            - PRIVATE_KEY
+            - PUBLIC_KEY
         depends_on: 
             - kafka
             - postgres
+        ports:
+            - 8001:8001
 
     postgres:
         image: postgres
@@ -50,8 +62,8 @@ services:
             - 9000:5432
         environment:
             - POSTGRES_DB=root
-            - POSTGRES_PASSWORD=root
-            - POSTGRES_USER=root
+            - POSTGRES_USER=${DATABASE_USERNAME}
+            - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
         volumes:
             - ./data/postgres-data:/var/lib/postgresql/data
     
