@@ -1,6 +1,7 @@
+from common.error.error import ActionError
 from faust.types import StreamT
 
-from common.error.handling import checkError
+from common.error.handling import handleError, checkError
 from common.models.message import Message
 
 from modules.api.actions import actioneer
@@ -10,10 +11,21 @@ from modules.kafka_handler.app import faustApp
 @faustApp.agent(defaultInTopic, sink=[defaultOutTopic])
 async def defaultAgent(messages: StreamT[Message]):
     async for event in messages:
-        if checkError(event, 'users'):
+        try:
+            if checkError(event, 'users'):
+                yield event
+            
+            action = actioneer.get_action(event.method, event.action)
+            await action(event)
+            
+        except ActionError as ex:
+            handleError(
+                event,
+                information=ex.information,
+                status=ex.status,
+                where=ex.where
+            )
+            
+        finally:
             yield event
         
-        action = actioneer.get_action(event.method, event.action)
-        await action(event)
-        
-        yield event

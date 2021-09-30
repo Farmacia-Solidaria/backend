@@ -7,8 +7,9 @@ from common.kafka.send import send_and_wait_message
 class SimpleConnection(APIView):
 
     def __init__(self, name=None):
-        
-        self.name = name if name else self.__class__.__name__.lower()
+        className = self.__class__.__name__.lower().split("connection")[0]
+        self.name = className if name is None else name 
+
 
     def _default_send_routine(self, method: str, request: HttpRequest, action: str):
 
