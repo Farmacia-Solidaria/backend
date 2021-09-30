@@ -6,3 +6,4 @@ class Message(faust.Record, serializer='json'):
     id: str
     method: str
     error: bool = False
+    token: str = ""

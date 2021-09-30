@@ -1,4 +1,6 @@
+import os
 import jwt
+import datetime
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -26,6 +28,7 @@ def auth(data):
     user = authenticate(username=data['username'], password=data['password'])
     if user is not None:
         payload = {
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60*int(os.environ["EXPIRATION_TIME"])),
             "permissions": [role.name for role in user.role_set.iterator()]
         }
         token = jwt.encode(payload, get_private_key(), 'RS256')

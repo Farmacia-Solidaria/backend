@@ -28,7 +28,7 @@ async def async_send_and_wait_message(service, action, data, filter=False, suppr
 
             return value
 
-def send_and_wait_message(method, service, action, data, filter=False, suppress_errors=False) -> dict:
+def send_and_wait_message(method, service, action, data, token, filter=False, suppress_errors=False) -> dict:
     key = str(uuid.uuid1())
 
     consumer = build_kafka_consumer(service+"-outcome", timeout_in_seconds=10)
@@ -39,7 +39,8 @@ def send_and_wait_message(method, service, action, data, filter=False, suppress_
         service=service, 
         action=action, 
         data=data, 
-        method=method, 
+        method=method,
+        token=token,
         key=key
     )
 
@@ -51,13 +52,14 @@ def send_and_wait_message(method, service, action, data, filter=False, suppress_
                 value = _filter_value(value)
             return value
 
-def send_message(service, action, data, method, key=""):
+def send_message(service, action, data, method, token, key=""):
     finalKey = key if key != "" else str(uuid.uuid1())
 
     message = Message(
         action=action,
         method=method,
         data=data,
+        token=token,
         id=finalKey,
     )
     try:

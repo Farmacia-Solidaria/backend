@@ -23,6 +23,7 @@ services:
             - SERVICE_PORT=8000
             - DATABASE_HOST=postgres
             - DATABASE_PORT=5432
+            - NAME=gateway
             - DEBUG
             - DJANGO_SECRET_KEY
             - DATABASE_USERNAME
@@ -43,12 +44,14 @@ services:
             - SERVICE_PORT=8001
             - DATABASE_HOST=postgres
             - DATABASE_PORT=5432
+            - NAME=users
             - DEBUG
             - DJANGO_SECRET_KEY
             - DATABASE_USERNAME
             - DATABASE_PASSWORD
             - PRIVATE_KEY
             - PUBLIC_KEY
+            - EXPIRATION_TIME
         depends_on: 
             - kafka
             - postgres
