@@ -7,8 +7,6 @@ from common import settings
 
 import asyncio
 
-loop = asyncio.get_event_loop()
-
 def build_kafka_consumer(topic, timeout_in_seconds=15):
     return KafkaConsumer(
         topic,
@@ -19,6 +17,9 @@ def build_kafka_consumer(topic, timeout_in_seconds=15):
     )
 
 def build_async_kafka_consumer(topic, timeout_in_seconds=15):
+
+    loop = asyncio.get_event_loop()
+
     return AIOKafkaConsumer(
         topic,
         loop=loop,

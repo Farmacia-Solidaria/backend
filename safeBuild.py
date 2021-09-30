@@ -12,6 +12,12 @@ parser.add_argument("--only", dest="only", help="Select which containers to buil
 parser.add_argument("--update", dest="update", const=True, default=False, action="store_const", help="Update container if running")
 parser.add_argument("--update-commons", dest="common", const=True, default=False, action="store_const", help="Update commons")
 
+enviroments = [
+    "development",
+    "production",
+    "staging"
+]
+
 def main(args):
     containers = listdir("services")
     toCompile = []
@@ -19,16 +25,12 @@ def main(args):
         selectedBefore = [i for i in file.read().splitlines()]
         options = []
         
-        if args.env not in ['dev', 'prod', 'staging']:
+        if args.env not in enviroments:
             options.append({
                 'type': 'list',
                 'name': 'env',
                 'message': "In what enviroment?",
-                'choices': [
-                    "dev",
-                    "prod",
-                    "staging"
-                ],
+                'choices': enviroments,
             })
 
         if args.only:
@@ -58,7 +60,7 @@ def main(args):
         for container in toCompile:
             command = f"""
             cd services/{container} &&
-            docker build -t farmacia-solidaria/{container}:{args.env} . &&
+            docker build --network=host -t farmacia-solidaria/{container}:{args.env} . &&
             docker tag farmacia-solidaria/{container}:{args.env} farmacia-solidaria/{container}:latest
             """
 
@@ -75,7 +77,7 @@ def main(args):
                 command = f"""            
                 docker-compose stop {container} &&
                 docker-compose kill {container} &&
-                docker-compose up -d --no-deps {container}
+                docker-compose --env-file ./secrets/.{args.env}.env up -d --no-deps {container}
                 """
 
                 print(f"\nKilling and updating container {container}:{args.env}:")

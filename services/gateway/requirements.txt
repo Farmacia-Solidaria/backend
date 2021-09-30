@@ -10,3 +10,7 @@ aiohttp==3.7.4
 faust[rocksdb]==1.10.4
 eventlet==0.31.1
 kafka-python==1.4.7
+
+# Others
+PyJWT==2.1.0
+cryptography==3.4.8

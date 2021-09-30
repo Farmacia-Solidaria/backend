@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 DEBUG = os.getenv("DEBUG")
 
@@ -19,7 +19,8 @@ FAUST_STORE_URL = 'rocksdb://'
 
 LOCAL_APPS = [
     'modules.kafka_handler',
-    'modules.api'
+    'modules.api',
+    'modules.authorization',
 ]
 
 THIRD_PARTY_APPS = [
@@ -104,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
