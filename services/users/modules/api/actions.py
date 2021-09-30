@@ -10,12 +10,11 @@ import modules.authorization.services as authorization_service
 
 actioneer = ActionHandler()
 
-@actioneer.register()
+@actioneer.register('get')
 @permissions_needed(['atendente', 'gerente'])
-async def get_self_permissions(message: Message):
+async def self_permissions(message: Message):
     message.data = get_token_permissions(treat_token(message.token))
 
-        
 
 @actioneer.register('get')
 async def auth(message: Message):
@@ -26,8 +25,8 @@ async def auth(message: Message):
         raise ActionError(information="You need to provide username and password")
     
     message.data = await authorization_service.auth(message.data)
-
    
+
 @actioneer.register()
 async def register(message: Message):
     if (
@@ -38,7 +37,6 @@ async def register(message: Message):
         raise ActionError(information="You need to provide username, password, email")
     
     message.data = await authorization_service.create_user(message.data)
-
 
 
 @actioneer.register("get")
