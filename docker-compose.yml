@@ -55,8 +55,6 @@ services:
         depends_on: 
             - kafka
             - postgres
-        ports:
-            - 8001:8001
 
     postgres:
         image: postgres

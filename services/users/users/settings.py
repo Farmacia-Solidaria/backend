@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
+from common.utils.consts import DEBUG as debug_const
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG")
+DEBUG = debug_const
 
 ALLOWED_HOSTS = [
     "gateway",
@@ -21,6 +22,7 @@ LOCAL_APPS = [
     'modules.kafka_handler',
     'modules.api',
     'modules.authorization',
+    'modules.data',
 ]
 
 THIRD_PARTY_APPS = [

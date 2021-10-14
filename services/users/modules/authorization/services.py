@@ -9,7 +9,7 @@ from asgiref.sync import sync_to_async
 from common.error.error import ActionError
 from common.utils.information import get_private_key
 
-from modules.authorization.forms import UserRegisterForm
+from modules.data.forms import UserRegisterForm
 
 @sync_to_async
 def create_user(data):
@@ -29,7 +29,7 @@ def auth(data):
     if user is not None:
         payload = {
             "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60*int(os.environ["EXPIRATION_TIME"])),
-            "permissions": [role.name for role in user.role_set.iterator()]
+            "permissions": [role.name for role in user.profile.role.all().iterator()]
         }
         token = jwt.encode(payload, get_private_key(), 'RS256')
         
@@ -44,6 +44,6 @@ def get_permissions(data):
     user = User.objects.get(username=data['username'])
     if user is not None:
         return {
-            "permissions": [role.name for role in user.role_set.iterator()]
+            "permissions": [role.name for role in user.profile.role.all().iterator()]
         }
     raise ActionError("User not found", )

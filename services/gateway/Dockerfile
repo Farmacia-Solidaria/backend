@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-CMD python manage.py runserver & python kafka_handler/app.py worker
+CMD [ "bash", "/app/entrypoint.sh" ]

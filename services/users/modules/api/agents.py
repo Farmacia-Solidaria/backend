@@ -3,6 +3,7 @@ from faust.types import StreamT
 
 from common.error.handling import handleError, checkError
 from common.models.message import Message
+from common.utils.consts import DEBUG
 
 from modules.api.actions import actioneer
 from modules.api.topics import defaultInTopic, defaultOutTopic
@@ -24,6 +25,14 @@ async def defaultAgent(messages: StreamT[Message]):
                 information=ex.information,
                 status=ex.status,
                 where=ex.where
+            )
+        
+        except Exception as ex:
+            handleError(
+                event,
+                information=str(ex) if DEBUG else "An unknow error has occured",
+                status=500,
+                where="users"
             )
             
         finally:

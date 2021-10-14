@@ -11,7 +11,7 @@ async def test(session):
         "password": "for error"
     }
     start_time = time.time()
-    async with session.post("http://localhost:8000/api/login/auth", data=payload) as res:
+    async with session.teste("http://localhost:8000/api/users/teste", data=payload) as res:
         data = await res.json()
         return time.time() - start_time
 
