@@ -1,5 +1,4 @@
 from django.db import models
-from cpf_field.models import CPFField
 from django.db.models.fields.files import ImageField
 
 class Address(models.Model):
@@ -13,20 +12,19 @@ class Address(models.Model):
 
 class Client(models.Model):
 
+    cpf = models.CharField(max_length=12, primary_key=True, null=False, blank=False)
     first_name = models.CharField(max_length=256)
     middle_name = models.CharField(max_length=256, null=True, blank=True)
     last_name = models.CharField(max_length=256, null=True, blank=True)
-    cpf = CPFField('cpf', primary_key=True)
 
     birthdate = models.DateField(null=True, blank=True)
-
-    details = models.OneToOneField('ClientDetails', on_delete=models.CASCADE)
 
 class ClientDetails(models.Model):
 
     social_name = models.CharField(max_length=512, null=True, blank=True)
     mother_name = models.CharField(max_length=512, null=True, blank=True)
     father_name = models.CharField(max_length=512, null=True, blank=True)
-    addresses = models.ForeignKey(Address, on_delete=models.CASCADE)
+    addresses = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
     photo = models.ImageField(default='default.jpg', upload_to='profile_image')
-    
+
+    client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name='details')

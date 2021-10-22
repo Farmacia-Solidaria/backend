@@ -21,8 +21,7 @@ requirements = [
     "build==0.6.0.post1",
 
     #Others
-    "django-cpf==0.1.0",
-    "Pillow==8.4.0",
+    "Pillow==8.4.0"
 ]
 
 setup(
