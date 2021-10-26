@@ -1,12 +1,21 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Client, ClientDetails
+from .models import Address, Client, ClientDetails
 
 @receiver(post_save, sender=Client)
-def create_profile(sender, instance, created, **kwargs):
+def create_client_details(sender, instance, created, **kwargs):
     if created:
-        ClientDetails.objects.create(client=instance)
+        try:
+            if instance.details: pass
+        except:
+            ClientDetails.objects.create(client=instance)
+            
+        try:
+            if instance.address: pass
+        except:
+            Address.objects.create(client=instance)
 
 @receiver(post_save, sender=Client)
-def save_profile(sender, instance, **kwargs):
+def save_client(sender, instance, **kwargs):
     instance.details.save()
+    instance.address.save()
