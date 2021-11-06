@@ -18,4 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('api/', include('connections.users.urls')),
+    path('api/', include('connections.clients.urls')),
 ]

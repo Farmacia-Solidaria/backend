@@ -11,3 +11,6 @@ To deploy use:
 ```bash
 docker-compose --env-file ./secrets/.{ENV}.env up
 ```
+
+### Important
+> Remember to create the user in Minio on production or development
