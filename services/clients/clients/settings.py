@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from datetime import timedelta
+from typing import List, Tuple
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,11 +24,13 @@ LOCAL_APPS = [
     'modules.kafka_handler',
     'modules.api',
     'modules.data',
+    'modules.client',
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
+    'django_minio_backend'
 ]
 
 
@@ -106,13 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'pt-br'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -121,5 +122,17 @@ STATIC_URL = '/static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Minio
+MINIO_ENDPOINT = '172.17.0.1:9001'
+MINIO_USE_HTTPS = False
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
+MINIO_URL_EXPIRY_HOURS = timedelta(minutes=int(os.getenv("MINIO_EXPIRE_TIME")))
+MINIO_CONSISTENCY_CHECK_ON_START = True
+MINIO_PRIVATE_BUCKETS = [
+    'client-pictures'
+]
+MINIO_PUBLIC_BUCKETS = []
+MINIO_BUCKET_CHECK_ON_SAVE = True

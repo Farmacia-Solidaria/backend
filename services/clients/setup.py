@@ -13,6 +13,10 @@ requirements = [
     "faust[rocksdb]==1.10.4",
     "kafka-python==1.4.7",
 
+    #S3 Bucket
+    "django-minio-backend==3.2.1",
+    "minio==7.1.1",
+    
     #Others
     "PyJWT==2.1.0",
     "cryptography==3.4.8",
@@ -21,7 +25,8 @@ requirements = [
     "build==0.6.0.post1",
 
     #Others
-    "Pillow==8.4.0"
+    "Pillow==8.4.0",
+
 ]
 
 setup(

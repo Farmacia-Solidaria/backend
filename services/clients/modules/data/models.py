@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models.fields.files import ImageField
+
+from django_minio_backend import MinioBackend, iso_date_prefix
 class Client(models.Model):
 
     cpf = models.CharField(max_length=12, primary_key=True, null=False, blank=False)
@@ -14,7 +15,7 @@ class ClientDetails(models.Model):
     social_name = models.CharField(max_length=512, null=True, blank=True)
     mother_name = models.CharField(max_length=512, null=True, blank=True)
     father_name = models.CharField(max_length=512, null=True, blank=True)
-    photo = models.ImageField(default='default.jpg', upload_to='profile_image')
+    photo = models.FileField(verbose_name="photo", storage=MinioBackend(bucket_name='client-pictures'), upload_to=iso_date_prefix)
 
     client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name='details')
 

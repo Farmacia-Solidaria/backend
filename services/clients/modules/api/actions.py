@@ -11,7 +11,7 @@ actioneer = ActionHandler()
 
 @actioneer.register()
 @permissions_needed(['gerente'])
-async def register_client(message: Message):
+async def register(message: Message):
     if (
         is_key_null(message.data['client'], 'first_name') or
         is_key_null(message.data['client'], 'cpf')

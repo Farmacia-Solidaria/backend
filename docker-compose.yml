@@ -71,9 +71,13 @@ services:
             - PRIVATE_KEY
             - PUBLIC_KEY
             - EXPIRATION_TIME
+            - MINIO_ACCESS_KEY
+            - MINIO_SECRET_KEY
+            - MINIO_EXPIRE_TIME
         depends_on: 
             - kafka
             - postgres
+            - minio
 
     postgres:
         image: postgres
@@ -115,6 +119,19 @@ services:
             - 9092:9092
         logging:
             driver: "none"
+        
+    minio:
+        image: minio/minio
+        restart: unless-stopped
+        command: server /data --console-address ":9001"
+        ports:
+            - 9001:9000
+            - 8081:9001
+        volumes:
+            - ./data/minio:/data
+        environment:
+            - MINIO_ROOT_USER
+            - MINIO_ROOT_PASSWORD
         
     # redis:
     #     image: redis
