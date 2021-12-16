@@ -135,3 +135,5 @@ lastoptions
 services/*/common/
 
 .vscode
+
+.requirements.dev.txt
