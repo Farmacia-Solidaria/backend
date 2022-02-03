@@ -55,6 +55,7 @@ services:
         depends_on: 
             - kafka
             - postgres
+
     clients:
         image: farmacia-solidaria/clients:latest
         restart: unless-stopped
@@ -88,8 +89,9 @@ services:
             - POSTGRES_DB=root
             - POSTGRES_USER=${DATABASE_USERNAME}
             - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+            - PG_DATA=/var/lib/pg_data
         volumes:
-            - ./data/postgres-data:/var/lib/postgresql/data
+            - ./data/postgres-data:/var/lib/pg_data
     
     zookeeper:
         image: 'bitnami/zookeeper:latest'
